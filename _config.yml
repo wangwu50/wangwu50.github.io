@@ -1,16 +1,16 @@
 # Site settings
-title: 读立写生
+title: 王无的小屋
 header-img: "img/green.jpg"
 tagline: "cn"  
-description: "陈素封|读而立·写而生"  
+description: "王无|不相信奇迹，只相信努力"  
 baseurl: ""
 url: "http://cnfeat"  
 
 # About/contact
 owner: 
-  name: " CnFeat"
-  email: CnFeat@gmail.com
-  bio: "写就是写的报酬"
+  name: " 王文超"
+  email: 2372876780@gmail.com
+  bio: "不相信奇迹，只相信努力"
 
 # Data
 gavatar: http://dreamofbook.qiniudn.com/Az..png
