@@ -18,7 +18,7 @@ description: 学习了思维导图，搭建了博客，所以把之前用xmind�
 [mindmanager](http://www.mindmanager.cc/)其实更好用一些，但要收费。土豪可以考虑这个。
 无论用什么思维导图，把想法画出来都是一个比较好的总结。
 下面是我自己的spring学习路线，还不是很完善，我会不断完善它的。
-![](../img/xmind/spring计划学习步奏.png)
+![](/img/xmind/spring.png)
 
 
 
