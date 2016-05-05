@@ -33,8 +33,11 @@ disruptor是一个开源的并发框架。用它可以代替current包里面的Q
 - 灵活可扩展
 
 推荐两个我个人认为比较好的学习网站
+
 首先是：[disruptor源码中的perftest包](https://github.com/LMAX-Exchange/disruptor/tree/master/src/perftest/java/com/lmax/disruptor)
+
 然后是：[并发编程网](http://ifeve.com/disruptor/)
+
 我的大部分知识都是看以上网站学习的。
 
 ## 原理
