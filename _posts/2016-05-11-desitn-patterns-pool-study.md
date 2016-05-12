@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 学习设计模式之池的学习
+title: 设计模式之池的学习
 date: 2016-05-11
 categories: blog
 tags: [技术,设计模式]
@@ -11,20 +11,23 @@ description: 设计模式学习
 ## 池的概念
 
 池在java中的有很广泛的使用，例如数据库连接池、线程池等。
+
 池的基本思想是将一个对象保存起来达到复用的目的
+
 思路是：池中维护一定量的对象，当需要使用对象的时候，只需要从池中拿出一个，使用完毕后再放回去。这样解决了资源频繁创建、释放的问题。
 
 ## 池的使用场景
 
-1.创建一个对象的开销非常大
-2.对象使用比较频繁
-3.对象可以复用
+1. 创建一个对象的开销非常大
+2. 对象使用比较频繁
+3. 对象可以复用
 
 ## 池和缓存的区别和联系
 
 池和缓存都是为了数据复用可以采取的策略，都是基于“空间换时间”的思想。
 
 ####区别
+
  - 池中的所有对象都是无状态，使用者不关心每个对象的区别。缓存是有状态的，使用者一定要找到某一个对应的对象
  - 池一般会主动创建对象，以便将来使用，而缓存是在使用后存储，不会主动创建对象。也可以说池控制着对象的整个生命周期，而缓存只保管对象在缓存中的生命周期。
  
@@ -41,7 +44,8 @@ The pool itself handles creation and destruction of the pooled objects, and mana
 
 首先我们设想这种场景：一个池维护这一类对象，假设这类对象是T，每次使用的时候我们可以从池中获取一个T，使用完的时候收回。我们可以把获取T的方法叫做checkOut，收回T的方法叫做checkIn。我们需要一个容器来保存未被使用的T，可以用hashset实现。比如这个set叫做available。我们还需要另外一个容器来保存在使用的T，可以叫做inUse。
 当池中没有对象的时候，需要有一个create方法来创建T。如下代码。
-``java
+
+```java
 public abstract class ObjectPool<T> {
 
   private HashSet<T> available = new HashSet<>();
@@ -70,10 +74,11 @@ public abstract class ObjectPool<T> {
   }
 }
 
-``
+```
+
 当我们要使用具体的一类对象容器是，可以继承这个抽象类，实现其create方法。例如：
 
-``java
+```java
 public class OliphauntPool extends ObjectPool<Oliphaunt> {
 
   @Override
@@ -87,9 +92,6 @@ public class Oliphaunt {
 
   private final int id;
 
-  /**
-   * Constructor
-   */
   public Oliphaunt() {
     id = counter++;
     try {
@@ -108,9 +110,11 @@ public class Oliphaunt {
     return String.format("Oliphaunt id=%d", id);
   }
 }
-``
+```
+
 以下是测试代码：
-``java
+
+```java
  public static void main(String[] args) {
     OliphauntPool pool = new OliphauntPool();
     System.out.println(pool);
@@ -133,7 +137,7 @@ public class Oliphaunt {
     System.out.println("Checked out " + oliphaunt5);
     System.out.println(pool);
   }
-``
+```
 这样我们就实现了一个简单的池。
 
 
