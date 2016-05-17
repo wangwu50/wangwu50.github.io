@@ -17,7 +17,7 @@ java中的枚举（enum）是jdk1.5以后加入的，使用枚举类有些场景
 ```java
 public enum ColorEnum
 {
-	red,green,yellow,blue;
+red,green,yellow,blue;
 }
 ``` 
 
@@ -26,10 +26,10 @@ public enum ColorEnum
 ```java
 public  class ColorEnum
 {
-	public static final ColorEnum red=new ColorEnum();
-	public static final ColorEnum green=new ColorEnum();
-	public static final ColorEnum yellow=new ColorEnum();
-	public static final ColorEnum blue=new ColorEnum();
+public static final ColorEnum red=new ColorEnum();
+public static final ColorEnum green=new ColorEnum();
+public static final ColorEnum yellow=new ColorEnum();
+public static final ColorEnum blue=new ColorEnum();
 }
 ```
 
@@ -43,9 +43,6 @@ public  class ColorEnum
 public enum ColorEnum
 {
 	red("red","1"),green("green","2"),yellow("yellow","3"),blue("blue","4");
-	/**
-	 * 
-	 */
 	private ColorEnum(String firstName,String secondeName)
 	{
 		//do some with names;
@@ -60,24 +57,21 @@ public enum ColorEnum
 ```java
 public enum ColorEnum
 {
-	red("red","1"),green("green","2"),yellow("yellow","3"),blue("blue","4");
-	private String name;
-	private ColorEnum(String firstName,String secondeName)
-	{
-		this.name=firstName+"_"+secondeName;
-	}
-	public String getName()
-	{
-		return this.name;
-	}
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString()
-	{
-		return this.name;
-	}
+red("red","1"),green("green","2"),yellow("yellow","3"),blue("blue","4");
+private String name;
+private ColorEnum(String firstName,String secondeName)
+{
+	this.name=firstName+"_"+secondeName;
+}
+public String getName()
+{
+	return this.name;
+}
+@Override
+public String toString()
+{
+	return this.name;
+}
 }
 ```
 
@@ -88,24 +82,24 @@ public enum ColorEnum
 ```java
 public static void main(String[] args)
 {
-	ColorEnum colorEnum=ColorEnum.blue;
-	switch (colorEnum)
-	{
-	case red:
-		System.out.println("color is red");
-		break;
-	case green:
-		System.out.println("color is green");
-		break;
-	case yellow:
-		System.out.println("color is yellow");
-		break;
-	case blue:
-		System.out.println("color is blue");
-		break;
-	default:
-		break;
-	}
+ColorEnum colorEnum=ColorEnum.blue;
+switch (colorEnum)
+{
+case red:
+	System.out.println("color is red");
+	break;
+case green:
+	System.out.println("color is green");
+	break;
+case yellow:
+	System.out.println("color is yellow");
+	break;
+case blue:
+	System.out.println("color is blue");
+	break;
+default:
+	break;
+}
 }
 ```
 
@@ -118,35 +112,35 @@ public static void main(String[] args)
 ```java
 public enum ColorEnum
 {
-	red("red","1"){
-		public String getName()
-		{
-			return this.name;
-		}
-	},green("green","2"){
-
-		public String getName()
-		{
-			return this.name;
-		}
-		
-	},yellow("yellow","3"){
-		public String getName()
-		{
-			return this.name;
-		}
-	},blue("blue","4"){
+red("red","1"){
 	public String getName()
 	{
 		return this.name;
 	}
-	};
-	protected String name;
-	private ColorEnum(String firstName,String secondeName)
+},green("green","2"){
+
+	public String getName()
 	{
-		this.name=firstName+"_"+secondeName;
+		return this.name;
 	}
-	public  abstract String getName();
+	
+},yellow("yellow","3"){
+	public String getName()
+	{
+		return this.name;
+	}
+},blue("blue","4"){
+public String getName()
+{
+	return this.name;
+}
+};
+protected String name;
+private ColorEnum(String firstName,String secondeName)
+{
+	this.name=firstName+"_"+secondeName;
+}
+public abstract String getName();
 }
 ```
 
@@ -163,15 +157,15 @@ public enum ColorEnum
 import java.util.concurrent.ThreadFactory;
 public enum DaemonThreadFactory implements ThreadFactory
 {
-    INSTANCE;
+INSTANCE;
 
-    @Override
-    public Thread newThread(final Runnable r)
-    {
-        Thread t = new Thread(r);
-        t.setDaemon(true);
-        return t;
-    }
+@Override
+public Thread newThread(final Runnable r)
+{
+    Thread t = new Thread(r);
+    t.setDaemon(true);
+    return t;
+}
 }
 ```
 
@@ -200,31 +194,31 @@ public interface Color
 ```java
 public enum ColorEnum
 {
-	deep(Color.deep.class),light(Color.light.class);
-	private ColorEnum(Class<? extends Color> color)
-	{
-		colors=color.getEnumConstants();
-	}
-	private Color[] colors;
-	public Color getOneColor()
-	{
-		return colors[1];
-	}
-	enum deep {
+deep(Color.deep.class),light(Color.light.class);
+private ColorEnum(Class<? extends Color> color)
+{
+	colors=color.getEnumConstants();
+}
+private Color[] colors;
+public Color getOneColor()
+{
+	return colors[1];
+}
+enum deep {
+	red,blue
+}
+enum light{
+	green,yellow
+}
+public interface Color
+{
+	enum deep implements Color{
 		red,blue
 	}
-	enum light{
+	enum light implements Color{
 		green,yellow
 	}
-	public interface Color
-	{
-		enum deep implements Color{
-			red,blue
-		}
-		enum light implements Color{
-			green,yellow
-		}
-	}
+}
 }
 ```
 
