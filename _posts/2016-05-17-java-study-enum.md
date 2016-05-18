@@ -178,12 +178,12 @@ public enum DaemonThreadFactory implements ThreadFactory
 ```java
 public interface Color
 {
-	enum deep implements Color{
-		red,blue
-	}
-	enum light implements Color{
-		green,yellow
-	}
+    enum deep implements Color{
+    	red,blue
+    }
+    enum light implements Color{
+    	green,yellow
+    }
 }
 ```
 
