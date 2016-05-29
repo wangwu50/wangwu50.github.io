@@ -1,12 +1,13 @@
 ---
 layout: post
-title: 有关优秀
+title: 优秀的思考
 date: 2016-05-20
 categories: blog
-tags: [生活,随想]
-description:优秀是什么
+tags: [生活,caprice]
+description: 优秀是什么
 
 ---
+
 优秀是我一直在追求的一种状态，在我的从小的整个求学过程和最近的接近一年的上班过程，我对优秀也有了一点点认识。
 我的第一篇生活博文，就来谈谈优秀相关的认知吧
 
