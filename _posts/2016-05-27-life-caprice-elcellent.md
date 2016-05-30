@@ -3,8 +3,8 @@ layout: post
 title: 有关优秀
 date: 2016-05-20
 categories: blog
-tags: [生活,随想]
-description:优秀是什么
+tags: [生活,caprice]
+description: 优秀是什么
 
 ---
 
