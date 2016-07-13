@@ -88,4 +88,25 @@ receive:50
 return :50
 stop!
 
+由此可见，对于String维护的单实例car里面的全局变量name并不是线程安全的。之前我这样使用的原因是因为网上有一些文字说spring把bean放入到Threadlocal里面来实现线程安全。
+我仔细研究了下这块内容，发现一下几个问题：
 
+- spring并没有把所有的bean都放入threadlocal中，只有一些本来不是线程安全的dao，它用threadlocal封装成了线程安全的。因此以下代码是没有问题的：
+
+```java
+@Service
+public class DaoTest
+{
+   @Autowired
+   private Dao dao;
+   public String find(String name)
+   {
+     return dao.getByName(name);
+   }
+}
+```
+
+虽然数据库连接不是线程安全的，但我们可以单实例来使用它。
+
+- 对于我们自己定义的全局域，spring并没有进行特殊处理，因此这个就不是线程安全的，在并发访问的时候会导致错误。而使用这种形式的类较多的是实体bean。
+这也给我们一个启示：**实体bean最好使用时自己new，不要交给spring进行管理**。
