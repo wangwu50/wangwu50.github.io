@@ -1,6 +1,6 @@
 ---
 layout: post
-title: spring的一个线程安全问题
+title: 一个spring线程安全问题
 date: 2016-07-13
 categories: blog
 tags: [技术,spring]
