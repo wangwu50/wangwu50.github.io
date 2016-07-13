@@ -89,7 +89,7 @@ return :50
 stop!
 
 由此可见，对于String维护的单实例car里面的全局变量name并不是线程安全的。之前我这样使用的原因是因为网上有一些文字说spring把bean放入到Threadlocal里面来实现线程安全。
-我仔细研究了下这块内容，发现一下几个问题：
+我仔细研究了下这块内容，发现以下几个问题：
 
 - spring并没有把所有的bean都放入threadlocal中，只有一些本来不是线程安全的dao，它用threadlocal封装成了线程安全的。因此以下代码是没有问题的：
 
