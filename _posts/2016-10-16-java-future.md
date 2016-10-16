@@ -57,21 +57,21 @@ Future从字面意思理解是未来，在java中其实是一个对未来结果�
 在java8之前，FutureTask是默认且唯一的Future实现类。它实现了RunnableFuture接口，RunnableFuture继承了Runnable和Future。本质上，FutureTask是一个实现了Runnable的类。因此可以放到线程池中去执行。FutureTask构造的时候需要Callable（或者一个Runnable和result，但其也会转化为Callable）。我们观察一下它的run方法，其核心是
 
 ```java
-     Callable<V> c = callable;
-            if (c != null && state == NEW) {
-                V result;
-                boolean ran;
-                try {
-                    result = c.call();
-                    ran = true;
-                } catch (Throwable ex) {
-                    result = null;
-                    ran = false;
-                    setException(ex);
-                }
-                if (ran)
-                    set(result);
-            }
+Callable<V> c = callable;
+if (c != null && state == NEW) {
+    V result;
+    boolean ran;
+    try {
+        result = c.call();
+        ran = true;
+    } catch (Throwable ex) {
+        result = null;
+        ran = false;
+        setException(ex);
+    }
+    if (ran)
+        set(result);
+}
 ```
 
 可以发现，FutureTask的run方法中执行了Callable的call方法，并把结果放到了一个地方供外部取用。而在FutureTask内部有一系列状态标志，这样在任务执行过程中，状态会跟着改变。这样外部就可以根据状态来判断完成情况了。
@@ -79,20 +79,20 @@ Future从字面意思理解是未来，在java中其实是一个对未来结果�
 因此，使用Future的一种情况就是直接使用FutureTask，如下代码所示：
 
 ```java
-    @Test
-    public void testFutureTask() throws InterruptedException, ExecutionException {
-        FutureTask<String> ft = new FutureTask<String>(new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                TimeUnit.SECONDS.sleep(1);
-                return "Done!";
-            }
-        });
-        ExecutorService service = Executors.newCachedThreadPool();
-        service.execute(ft);
-        String result = ft.get();
-        System.out.println(result);
-    }
+@Test
+public void testFutureTask() throws InterruptedException, ExecutionException {
+    FutureTask<String> ft = new FutureTask<String>(new Callable<String>() {
+        @Override
+        public String call() throws Exception {
+            TimeUnit.SECONDS.sleep(1);
+            return "Done!";
+        }
+    });
+    ExecutorService service = Executors.newCachedThreadPool();
+    service.execute(ft);
+    String result = ft.get();
+    System.out.println(result);
+}
 ```
 
 这里，FutureTask其实就是一个的Future，我们可以执行有关Future的一系列操作。
@@ -100,34 +100,34 @@ Future从字面意思理解是未来，在java中其实是一个对未来结果�
 但是，如果每次要使用Future，都需要new一个和业务无关的FutureTask，这样也会给使用带来不便。在ExecutorService接口中有一个submit的方法。这个方法可以直接返回一个Future，使用者不需要关心Future是怎么来的，直接使用即可。
 
 ```java
-    @Test
-    public void testFuture() throws InterruptedException, ExecutionException {
-        ExecutorService service = Executors.newCachedThreadPool();
-        Future<String> future = service.submit(new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                TimeUnit.SECONDS.sleep(1);
-                return "Done!";
-            }
-        });
-        String result = future.get();
-        System.out.println(result);
-    }
+@Test
+public void testFuture() throws InterruptedException, ExecutionException {
+    ExecutorService service = Executors.newCachedThreadPool();
+    Future<String> future = service.submit(new Callable<String>() {
+        @Override
+        public String call() throws Exception {
+            TimeUnit.SECONDS.sleep(1);
+            return "Done!";
+        }
+    });
+    String result = future.get();
+    System.out.println(result);
+}
 ```
 
 看一下submit的代码:
 
 ```java
 public Future<?> submit(Runnable task) {
-        if (task == null) throw new NullPointerException();
-        RunnableFuture<Void> ftask = newTaskFor(task, null);
-        execute(ftask);
-        return ftask;
-    }
+    if (task == null) throw new NullPointerException();
+    RunnableFuture<Void> ftask = newTaskFor(task, null);
+    execute(ftask);
+    return ftask;
+}
     
 protected <T> RunnableFuture<T> newTaskFor(Runnable runnable, T value) {
-       return new FutureTask<T>(runnable, value);
-    }
+   return new FutureTask<T>(runnable, value);
+}
 ```
 
 我们可以发现，submit其实也是new了一个FutureTask，然后将其返回的。因此，在ThreadPoolExecutor中，其实是使用FutureTask来实现Future的。
@@ -137,17 +137,17 @@ protected <T> RunnableFuture<T> newTaskFor(Runnable runnable, T value) {
 前面说过，Future对象其实是一个对未来结果的引用，java8中的新的Future实现类CompletableFuture就很好的体现了这一点。我们可以单独使用它：
 
 ```java
-    @Test
-    public void testCompletableFuture() throws InterruptedException, ExecutionException
-    {
-        CompletableFuture<String> cF=new CompletableFuture<>();
-        cF.complete("123");
-        String result = cF.get();
-        System.out.println(result);
-        cF.complete("222");
-        String result2 = cF.get();
-        System.out.println(result2);
-    }
+@Test
+public void testCompletableFuture() throws InterruptedException, ExecutionException
+{
+    CompletableFuture<String> cF=new CompletableFuture<>();
+    cF.complete("123");
+    String result = cF.get();
+    System.out.println(result);
+    cF.complete("222");
+    String result2 = cF.get();
+    System.out.println(result2);
+}
 ```
 
 输出：123 123
@@ -156,31 +156,31 @@ protected <T> RunnableFuture<T> newTaskFor(Runnable runnable, T value) {
 这样的实现，其实非常清晰的将Future的功能和Executor分离出去了。我们可以在任意代码中使用CompletableFuture。当然，java8中也提供了封装好的方法来实现和之前线程池的submit一样的功能。
 
 ```java
-    @Test
-    public void testCompletableFutureAsync() throws InterruptedException, ExecutionException {
-        Future<String> future = CompletableFuture.supplyAsync(() -> {
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return "Done!";
-        }, Executors.newCachedThreadPool());
-        String result = future.get();
-        System.out.println(result);
-    }
+@Test
+public void testCompletableFutureAsync() throws InterruptedException, ExecutionException {
+    Future<String> future = CompletableFuture.supplyAsync(() -> {
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return "Done!";
+    }, Executors.newCachedThreadPool());
+    String result = future.get();
+    System.out.println(result);
+}
 ```
 
 supplyAsync调用了asyncSupplyStage方法，asyncSupplyStage方法如下：
 
 ```java
-    static <U> CompletableFuture<U> asyncSupplyStage(Executor e,
-                                                     Supplier<U> f) {
-        if (f == null) throw new NullPointerException();
-        CompletableFuture<U> d = new CompletableFuture<U>();
-        e.execute(new AsyncSupply<U>(d, f));
-        return d;
-    }
+static <U> CompletableFuture<U> asyncSupplyStage(Executor e,
+                                                 Supplier<U> f) {
+    if (f == null) throw new NullPointerException();
+    CompletableFuture<U> d = new CompletableFuture<U>();
+    e.execute(new AsyncSupply<U>(d, f));
+    return d;
+}
 ```
 
 AsyncSupply实现了Runnable，其run方法将执行结果放到了CompletableFuture中。可以看出和FutureTask差不多，将任务组合成一个最后返回了一个CompletableFuture。
@@ -197,55 +197,55 @@ Guava是google提供一个开源工具包，里面对Future进行了很好的扩
 ListenableFuture是guava提倡的使用Future的方式，它在Future的基础上扩展了一个*void addListener(Runnable listener, Executor executor)*方法。也就是说，在Future执行完之后，我们可以添加回调方法。当然，这个addListener使用起来也不是太方便。guava提供了Futures工具类中的addCallback(ListenableFuture<V> future,FutureCallback<? super V> callback)方便使用。为了能够返回ListenableFuture，guava提供了MoreExecutors工具类来修饰任意Executor。如下代码：
 
 ```java
-    @Test
-    @SneakyThrows
-    public void testGuavaFutureCallback() {
-        ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
-        ListenableFuture<String> future = service.submit(() -> {
-            TimeUnit.SECONDS.sleep(1);
-            return "Done!";
-        });
-        Futures.addCallback(future, new FutureCallback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                System.out.println(result);
-            }
-            @Override
-            public void onFailure(Throwable t) {
-            }
-        });
-        TimeUnit.SECONDS.sleep(2);
-    }
+@Test
+@SneakyThrows
+public void testGuavaFutureCallback() {
+    ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
+    ListenableFuture<String> future = service.submit(() -> {
+        TimeUnit.SECONDS.sleep(1);
+        return "Done!";
+    });
+    Futures.addCallback(future, new FutureCallback<String>() {
+        @Override
+        public void onSuccess(String result) {
+            System.out.println(result);
+        }
+        @Override
+        public void onFailure(Throwable t) {
+        }
+    });
+    TimeUnit.SECONDS.sleep(2);
+}
 ```
 
 Futures提供了很多有用的方法，如果有多个Future，可以使用allAsList方法将多个Future转为一个Future统一处理：
 
 ```java
-        @Test
-    @SneakyThrows
-    public void testAsList() {
-        ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
-        ListenableFuture<String> future = service.submit(() -> {
-            TimeUnit.SECONDS.sleep(1);
-            return "Done!";
-        });
-        ListenableFuture<String> future2 = service.submit(() -> {
-            TimeUnit.SECONDS.sleep(1);
-            return "Done too!";
-        });
-        ListenableFuture<List<String>> allAsList = Futures.allAsList(future, future2);
-        Futures.addCallback(allAsList, new FutureCallback<List<String>>() {
-            @Override
-            public void onSuccess(List<String> result) {
-                result.forEach(a->System.out.println(a));
-            }
-            @Override
-            public void onFailure(Throwable t) {
-                t.printStackTrace();
-            }
-        });
-        TimeUnit.SECONDS.sleep(2);
-    }
+@Test
+@SneakyThrows
+public void testAsList() {
+    ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
+    ListenableFuture<String> future = service.submit(() -> {
+        TimeUnit.SECONDS.sleep(1);
+        return "Done!";
+    });
+    ListenableFuture<String> future2 = service.submit(() -> {
+        TimeUnit.SECONDS.sleep(1);
+        return "Done too!";
+    });
+    ListenableFuture<List<String>> allAsList = Futures.allAsList(future, future2);
+    Futures.addCallback(allAsList, new FutureCallback<List<String>>() {
+        @Override
+        public void onSuccess(List<String> result) {
+            result.forEach(a->System.out.println(a));
+        }
+        @Override
+        public void onFailure(Throwable t) {
+            t.printStackTrace();
+        }
+    });
+    TimeUnit.SECONDS.sleep(2);
+}
 ```
 
 还有transformAsync方法，可以把ListenableFuture和另外一个ListenableFuture结合起来，限于篇幅不在赘述。总之ListenableFuture是guava提供的一个很好用的api。
@@ -259,10 +259,11 @@ Futures提供了很多有用的方法，如果有多个Future，可以使用allA
 - 重写Future。 查看MoreExecutors.listeningDecorator可知，该方法返回的是guava自己实现的一套Future。该Executors重写了返回的Future实现类方法：
 
 ```java
-  @Override protected final <T> RunnableFuture<T> newTaskFor(Runnable runnable, T value) {
-    return TrustedListenableFutureTask.create(runnable, value);
-  }
+@Override protected final <T> RunnableFuture<T> newTaskFor(Runnable runnable, T value) {
+  return TrustedListenableFutureTask.create(runnable, value);
+}
 ```
+
 TrustedListenableFutureTask的Future主要实现在AbstractFuture中，run方法中调用了AbstractFuture的set方法。也就是说，其实guava在jdk8之前就实现了Future和Runnable的分离。在set()方法中，会调用complete()方法，该方法会执行listener的runnable方法。
 
 #### SettableFuture
@@ -270,17 +271,17 @@ TrustedListenableFutureTask的Future主要实现在AbstractFuture中，run方法
 SettableFuture是guava对外提供的他们自己写的Future实现类。和jdk8的CompletableFuture使用方法几乎一样，先调用set放值，然后再调用get取值。
 
 ```java
-    @Test
-    @SneakyThrows
-    public void testSettableFuture() {
-        SettableFuture<String> future = SettableFuture.create();
-        future.set("123");
-        String result = future.get();
-        System.out.println(result);
-        future.set("222");
-        String result2 = future.get();
-        System.out.println(result2);
-    }
+@Test
+@SneakyThrows
+public void testSettableFuture() {
+    SettableFuture<String> future = SettableFuture.create();
+    future.set("123");
+    String result = future.get();
+    System.out.println(result);
+    future.set("222");
+    String result2 = future.get();
+    System.out.println(result2);
+}
 ```
 
 输出：123 123
@@ -297,33 +298,33 @@ spring中对Future封装更多的是为了使用为主，spring定义了@Async�
 
 ```java
 Callable<Object> task = new Callable<Object>() {
-    @Override
-    public Object call() throws Exception {
-        try {
-            Object result = invocation.proceed();
-            if (result instanceof Future) {
-                return ((Future<?>) result).get();
-            }
+@Override
+public Object call() throws Exception {
+    try {
+        Object result = invocation.proceed();
+        if (result instanceof Future) {
+            return ((Future<?>) result).get();
         }
-        catch (ExecutionException ex) {
-            handleError(ex.getCause(), userDeclaredMethod, invocation.getArguments());
-        }
-        catch (Throwable ex) {
-            handleError(ex, userDeclaredMethod, invocation.getArguments());
-        }
-        return null;
     }
+    catch (ExecutionException ex) {
+        handleError(ex.getCause(), userDeclaredMethod, invocation.getArguments());
+    }
+    catch (Throwable ex) {
+        handleError(ex, userDeclaredMethod, invocation.getArguments());
+    }
+    return null;
+}
 };
 ```
 
 ```java
-    if (Future.class.isAssignableFrom(returnType)) {
-            return executor.submit(task);
-        }
-        else {
-            executor.submit(task);
-            return null;
-        }
+if (Future.class.isAssignableFrom(returnType)) {
+        return executor.submit(task);
+    }
+    else {
+        executor.submit(task);
+        return null;
+    }
 ```
 
 这样，我们定义方法的时候就可以定义返回Future的API。
@@ -335,14 +336,14 @@ spring在高版本也定义了一套自己的ListenableFuture，其主要实现�
 根据spring对Future的处理，我实现了基于disruptor的异步注解，主要思路是让disruptor抽象类继承AbstractExecutorService，实现execute方法。然后aop中使用和spring相似的处理方式。当然有所变化的是，我加入了guava的ListenableFuture。
 
 ```java
-    if (ListenableFuture.class.isAssignableFrom(returnType)) {
-        return MoreExecutors.listeningDecorator(executor).submit(task);
-    } else if (Future.class.isAssignableFrom(returnType)) {
-        return executor.submit(task);
-    } else {
-        executor.submit(task);
-        return null;
-    }
+if (ListenableFuture.class.isAssignableFrom(returnType)) {
+    return MoreExecutors.listeningDecorator(executor).submit(task);
+} else if (Future.class.isAssignableFrom(returnType)) {
+    return executor.submit(task);
+} else {
+    executor.submit(task);
+    return null;
+}
 ```
 
 ## 关于设置异步API
