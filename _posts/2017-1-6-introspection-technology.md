@@ -22,7 +22,7 @@ description: 对2016年的一个技术总结
 
 - 代码哲学
 
-##思维导图
+## 思维导图
 
 ![](/img/xmind/2016introspection.png)
 
