@@ -1,10 +1,10 @@
 ---
 layout: post
-title: 泰康在线app架构图
-date: 2017-1-6
+title: 关于容器技术的思考
+date: 2017-8-14
 categories: blog
 tags: [技术,总结]
-description: 对之前app3.0的总结
+description: 对容器的思考
 
 ---
 
