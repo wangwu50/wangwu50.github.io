@@ -1,7 +1,7 @@
 ---
 layout: post
 title: excel countif 使用说明
-date: 2017-6-25
+date: 2018-4-17
 categories: blog
 tags: [技术,excel]
 description: excel countif
