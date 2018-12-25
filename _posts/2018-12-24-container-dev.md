@@ -85,5 +85,6 @@ Ingress 是针对HTTP层的应用来说的，它本质是一个普通的负载�
 ![](/img/container-dev/16.JPG)
 有了对kubernetes的基本了解，小明可以尝试把他的博客系统部署在kubernetes上了。就和我们刚刚说的一样，使用deployment管理pod，service做负载均衡，ingress把服务暴露到外部。Deployment里面的replicaSet会保证pod的数量，当容器挂了会自动重启，当某个node节点挂了，会自动把这个节点上的容器迁移到其他node上。当pod扩容缩容时候，会ingress会自动更新其负载均衡的配置。当重新发布的时候，只需修改deployment的镜像名称，就可以自动进行滚动升级，完全不会影响服务。至此，小明再也不担心博客出问题了。
 
-将一个博客系统跑在kubernetes中其实是有点像一列火车运输了一根小螺丝。但基于kubernetes搭建一个paas平台是极好的选择。Kubernetes虽然功能、定义都非常丰富，但如果想把kubernetes建成一个生态，还是有很多东西要做。下面我抽一些功能点简单说说实现思路。
+将一个博客系统跑在kubernetes中其实是有点像一列火车运输了一根小螺丝。但基于kubernetes搭建一个paas平台是极好的选择。Kubernetes虽然功能、定义都非常丰富，但如果想把kubernetes建成一个生态，还是有很多东西要做。下面我抽一些功能点简单说说实现思路。（有关小米对kubernetes做的扩展略）
 ![](/img/container-dev/17.JPG)
+
